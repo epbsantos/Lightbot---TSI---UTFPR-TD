@@ -92,7 +92,7 @@ If you prefer to build the game yourself (or modify the code):
 ---
 
 ## Using Lightbot in teaching
-
+## way too buggy rn
 Lightbot was designed with teaching in mind. Typical use cases include:
 
 - Introducing **basic programming concepts** (sequencing, loops, conditionals)
