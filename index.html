@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LightBot v1.3.7</title>
   <link rel="shortcut icon" href="img/favicon.ico" />
+  <!-- Hide the page until main.js has applied the stylesheet (avoids a flash of unstyled content in dev). -->
+  <style>html:not(.lb-ready) body { visibility: hidden; }</style>
   <script>
     (function () {
       try {
@@ -412,7 +414,17 @@
           </div>
           <div id="programContainer" class="card bg-base-200 shadow flex-1 min-h-0">
             <div class="card-body p-3 min-h-0">
-              <h2 class="card-title text-base"><span data-i18n="program.title"></span></h2>
+              <div class="flex items-center justify-between gap-2">
+                <h2 class="card-title text-base"><span data-i18n="program.title"></span></h2>
+                <button type="button" class="clearProgramButton btn btn-ghost btn-xs gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3 shrink-0">
+                    <path fill-rule="evenodd"
+                      d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <span class="leading-none" data-i18n="program.clearAll"></span>
+                </button>
+              </div>
               <div class="droppable flex-1 overflow-x-hidden overflow-y-auto min-h-0">
                 <ul class="space-y-0 min-h-[360px]"></ul>
               </div>
