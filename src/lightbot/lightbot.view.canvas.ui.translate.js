@@ -3,6 +3,9 @@ import i18next from "i18next";
 import { LIGHTBOT_TRANSLATIONS_DE } from "../locales/translations.de.js";
 import { LIGHTBOT_TRANSLATIONS_EN } from "../locales/translations.en.js";
 import { LIGHTBOT_TRANSLATIONS_FR } from "../locales/translations.fr.js";
+import { LIGHTBOT_TRANSLATIONS_JP } from "../locales/translations.jp.js";
+import { LIGHTBOT_TRANSLATIONS_PT_BR } from "../locales/translations.pt.js";
+
 
 var LANGUAGE_STORAGE_KEY = "lightbot_language";
 var FALLBACK_LANGUAGE = "en";
@@ -15,6 +18,12 @@ var TRANSLATION_RESOURCES = {
   },
   fr: {
     translation: LIGHTBOT_TRANSLATIONS_FR,
+  },
+  jp: { 
+    translation: LIGHTBOT_TRANSLATIONS_JP
+  },
+  pt_br: { 
+    translation: LIGHTBOT_TRANSLATIONS_PT_BR
   },
 };
 
@@ -51,7 +60,7 @@ function getStoredLanguage() {
 function setStoredLanguage(language) {
   try {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function updateDocumentLanguage(language) {
