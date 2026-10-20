@@ -281,15 +281,15 @@ export function createUi(params) {
         });
       }
 
-      var clearButton = document.getElementById("clearButton");
-      if (clearButton) {
-        clearButton.addEventListener("click", function () {
+      // Both the toolbar trash icon and the "Clear all" button in the program card empty the program.
+      document.querySelectorAll("#clearButton, .clearProgramButton").forEach(function (el) {
+        el.addEventListener("click", function () {
           // wipe the program and persist the empty state.
           var list = document.querySelector("#programContainer ul");
           if (list) list.textContent = "";
           editor.saveProgram();
         });
-      }
+      });
 
       // Help accordion: swap the demo video when selecting a help topic.
       var accordion = document.getElementById("helpScreenAccordion");

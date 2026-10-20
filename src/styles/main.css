@@ -100,7 +100,8 @@
 
   .lb-level-tile--completed {
     outline: 2px solid color-mix(in oklab, var(--color-primary) 60%, transparent);
-    outline-offset: 2px;
+    /* Draw the outline on the tile's own edge; a positive offset leaves a gap that reads as a second frame. */
+    outline-offset: -2px;
   }
 
   .flip {
