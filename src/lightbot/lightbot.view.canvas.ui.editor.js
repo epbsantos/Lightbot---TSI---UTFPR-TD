@@ -173,6 +173,15 @@ export function createEditor(params) {
     });
   }
 
+  function touchDragOptions() {
+    return {
+      delay: 150,
+      delayOnTouchOnly: true,
+      touchStartThreshold: 5,
+      fallbackTolerance: 8,
+    };
+  }
+
   var editor = {
     _instructionSortable: null,
     _programSortables: [],
@@ -332,7 +341,7 @@ export function createEditor(params) {
       var instructionList = document.querySelector("#instructionsContainer ul");
       if (!instructionList) return;
 
-      this._instructionSortable = Sortable.create(instructionList, {
+      this._instructionSortable = Sortable.create(instructionList, Object.assign(touchDragOptions(), {
         group: {
           name: "lightbot-instructions",
           pull: "clone",
@@ -365,7 +374,7 @@ export function createEditor(params) {
             evt.to.classList.add("lb-drop-hover");
           }
         },
-      });
+      }));
     },
 
     _ensureProgramSortables: function (rootEl) {
@@ -387,7 +396,7 @@ export function createEditor(params) {
         if (!listEl.closest || !listEl.closest("#programContainer")) return;
         if (listEl._lightbotSortable) return;
 
-        listEl._lightbotSortable = Sortable.create(listEl, {
+        listEl._lightbotSortable = Sortable.create(listEl, Object.assign(touchDragOptions(), {
           group: {
             name: "lightbot-program",
             pull: true,
@@ -443,7 +452,7 @@ export function createEditor(params) {
           onRemove: function () {
             self.saveProgram();
           },
-        });
+        }));
 
         self._programSortables.push(listEl._lightbotSortable);
       });
