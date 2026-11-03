@@ -19,7 +19,7 @@ export function canvasView(app, canvas) {
   var bg = null;
 
   var tmp = new Image();
-  tmp.src = 'img/pattern.png';
+  tmp.src = 'img/fundo_game.png';
   tmp.onload = function() {
     bg = lightBot.ctx.createPattern(tmp, 'repeat');
   };

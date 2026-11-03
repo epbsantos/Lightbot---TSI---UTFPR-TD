@@ -17,7 +17,7 @@ export function extendBotView(params) {
 
   // bot sprites
   var image = new Image();
-  image.src = 'img/sprites.png';
+  image.src = 'img/zoro_personagem.png';
 
   // bot animation
   var currentStep = 0; // # of frames since animation started
