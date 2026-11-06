@@ -84,6 +84,7 @@
           <option value="de">Deutsch</option>
           <option value="fr">Français</option>
           <option value="jp">日本語</option>
+          <option value="ru">Русский</option>
         </select>
         <select data-choose-theme class="select select-sm w-36 bg-base-100/80 backdrop-blur shadow">
           <option value="lightbot">lightbot</option>
@@ -427,6 +428,14 @@
                   </svg>
                   <span class="leading-none" data-i18n="program.clearAll"></span>
                 </button>
+              </div>
+              <div class="flex items-center justify-between gap-2 text-xs">
+                <span><span data-i18n="program.instructionCount"></span>: <strong class="lb-instruction-count">0</strong></span>
+                <span class="lb-medal-goals flex items-center gap-2">
+                  <span class="lb-medal-goal flex items-center" data-medal="gold"><span class="medal medal-gold lb-medal-small"></span>≤<span class="lb-medal-limit"></span></span>
+                  <span class="lb-medal-goal flex items-center" data-medal="silver"><span class="medal medal-silver lb-medal-small"></span>≤<span class="lb-medal-limit"></span></span>
+                  <span class="lb-medal-goal flex items-center" data-medal="bronze"><span class="medal medal-bronze lb-medal-small"></span>≤<span class="lb-medal-limit"></span></span>
+                </span>
               </div>
               <div class="droppable flex-1 overflow-x-hidden overflow-y-auto min-h-0">
                 <ul class="space-y-0 min-h-[360px]"></ul>

@@ -1,8 +1,14 @@
 // Canvas renderer + main simulation tick (60fps); drives `app.step()` and `app.draw()`.
+import { launchConfetti } from "./lightbot.view.canvas.confetti.js";
+import { createSparks } from "./lightbot.view.canvas.sparks.js";
+
 export function canvasView(app, canvas) {
   var lightBot = app;
   // set the rendering context
   lightBot.ctx = canvas.getContext('2d');
+
+  // sparks shown when a light is turned on
+  var sparks = createSparks(lightBot.ctx);
 
   // refresh rate and rendering loop
   var fps = 60;
@@ -32,7 +38,11 @@ export function canvasView(app, canvas) {
       var newPos = lightBot.bot.currentPos; // get the new position
       lightBot.bot.animate(instruction, oldPos, newPos);
       playInstructionSfx(instruction, oldPos, newPos);
+      spawnLightSparks(instruction, newPos);
+      highlightInstruction(instruction);
     }
+    // remove the highlight once the program stops running
+    if (highlighted && !lightBot.bot.isInExecutionMode()) highlightInstruction(null);
     // check if map has been completed here
     if (lightBot.map.ready() && lightBot.map.state.allLightsOn()) {
 
@@ -42,6 +52,7 @@ export function canvasView(app, canvas) {
       // award medals
       var medal = lightBot.medals.awardMedal();
       lightBot.medals.display(medal); // show medal dialog
+      launchConfetti(document.getElementById('levelCompleteDialog'), getConfettiStyle(medal)); // confetti on top of the dialog
 
       // award achievements
       var achievements = lightBot.achievements.awardAchievements();
@@ -81,16 +92,55 @@ export function canvasView(app, canvas) {
         playSfx(moved ? 'jump' : 'bump');
         break;
       case 'walk':
-        if (!moved) playSfx('bump');
+        playSfx(moved ? 'walk' : 'bump');
+        break;
+      case 'turnLeft':
+        playSfx('turnLeft');
+        break;
+      case 'turnRight':
+        playSfx('turnRight');
         break;
       default:
         break;
     }
   }
 
+  // Highlights the program instruction that is running now (null removes the highlight).
+  var highlighted = null;
+  function highlightInstruction(instruction) {
+    if (highlighted) highlighted.classList.remove('lb-running');
+    highlighted = instruction && instruction.element ? instruction.element : null;
+    if (highlighted) {
+      highlighted.classList.add('lb-running');
+      highlighted.scrollIntoView({ block: 'nearest' }); // keep it visible in long programs
+    }
+  }
+
+  // Picks the confetti style for the medal; level 0 is the tutorial and has no medal.
+  function getConfettiStyle(medal) {
+    if (Number(lightBot.map.getLevelNumber()) === 0) return 'party';
+    switch (medal) {
+      case lightBot.medals.gold: return 'gold';
+      case lightBot.medals.silver: return 'silver';
+      case lightBot.medals.bronze: return 'bronze';
+      default: return 'noMedal';
+    }
+  }
+
+  // Bursts sparks from the center of the top of a light box that was just turned on.
+  function spawnLightSparks(instruction, pos) {
+    if (!instruction || instruction.name !== 'light') return;
+    var tile = lightBot.map.getMapRef()[pos.x][pos.y];
+    if (!(tile instanceof lightBot.LightBox) || !tile.lightOn) return;
+    var edge = tile.getEdgeLength();
+    var center = lightBot.projection.project((tile.x + 0.5) * edge, tile.getHeight() * edge, (tile.y + 0.5) * edge);
+    sparks.burst(center.x, center.y);
+  }
+
   function step() {
     lightBot.bot.step();
     lightBot.map.step();
+    sparks.step();
   }
 
   function draw() {
@@ -193,6 +243,9 @@ export function canvasView(app, canvas) {
         console.error('canvasView draw: unknown direction "' + lightBot.bot.direction + '"');
         break;
     }
+
+    // sparks go last so they appear on top of the map and the bot
+    sparks.draw();
 
   }
 

@@ -6,6 +6,7 @@ import { LIGHTBOT_TRANSLATIONS_ES } from "../locales/translations.es.js";
 import { LIGHTBOT_TRANSLATIONS_FR } from "../locales/translations.fr.js";
 import { LIGHTBOT_TRANSLATIONS_JP } from "../locales/translations.jp.js";
 import { LIGHTBOT_TRANSLATIONS_PT_BR } from "../locales/translations.pt.js";
+import { LIGHTBOT_TRANSLATIONS_RU } from "../locales/translations.ru.js";
 
 
 var LANGUAGE_STORAGE_KEY = "lightbot_language";
@@ -28,6 +29,9 @@ var TRANSLATION_RESOURCES = {
   },
   pt_br: { 
     translation: LIGHTBOT_TRANSLATIONS_PT_BR
+  },
+  ru: {
+    translation: LIGHTBOT_TRANSLATIONS_RU
   },
 };
 

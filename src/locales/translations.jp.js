@@ -121,7 +121,8 @@ export const LIGHTBOT_TRANSLATIONS_JP = {
   },
   "program": {
     "title": "プログラム",
-    "clearAll": "すべてクリア"
+    "clearAll": "すべてクリア",
+    "instructionCount": "命令数"
   },
   "dialogs": {
     "levelComplete": {

@@ -121,7 +121,8 @@ export const LIGHTBOT_TRANSLATIONS_FR = {
   },
   "program": {
     "title": "Programme",
-    "clearAll": "Tout effacer"
+    "clearAll": "Tout effacer",
+    "instructionCount": "Instructions"
   },
   "dialogs": {
     "levelComplete": {
