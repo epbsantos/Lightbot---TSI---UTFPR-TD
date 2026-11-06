@@ -129,6 +129,27 @@
     outline-offset: -2px;
   }
 
+  /* live medal counter above the program: smaller medals, only the medal you would earn is bright */
+  .lb-medal-small {
+    zoom: 0.6;
+  }
+
+  .lb-medal-goal {
+    opacity: 0.35;
+    transition: opacity 0.2s;
+  }
+
+  .lb-medal-goal--active {
+    opacity: 1;
+    font-weight: bold;
+  }
+
+  /* instruction being executed by the bot right now */
+  #programContainer .lb-running > .lb-instruction-row {
+    outline: 3px solid var(--color-warning);
+    outline-offset: -3px;
+  }
+
   /* Instruction palette/program differences */
   #instructionsContainer .lb-instruction-delete {
     display: none !important;

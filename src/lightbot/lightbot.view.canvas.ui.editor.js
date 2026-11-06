@@ -10,6 +10,11 @@ export function createEditor(params) {
   var PROGRAM_STORAGE_VERSION = 1;
   if (!map) throw new Error("createEditor: missing map");
   if (!instructions) throw new Error("createEditor: missing instructions");
+  var media = params.media; // optional: used for the add/remove sound effects
+
+  function playSfx(name) {
+    if (media && typeof media.playSfx === "function") media.playSfx(name);
+  }
 
   function forEachNode(list, fn) {
     if (!list) return;
@@ -243,16 +248,81 @@ export function createEditor(params) {
         if (!btn || !container.contains(btn)) return;
         var li = btn.closest("li");
         if (li) li.remove();
+        playSfx("remove");
         editor._cleanupProgramSortables();
         editor.saveProgram();
       });
 
+      // double-click an instruction in the palette to add it to the end of the program.
+      var palette = document.getElementById("instructionsContainer");
+      if (palette) {
+        palette.addEventListener("dblclick", function (e) {
+          var target = e.target;
+          if (!target || !target.closest) return;
+          if (target.closest("input")) return; // let the player edit the repeat count
+          var sourceLi = target.closest("li");
+          if (!sourceLi || !palette.contains(sourceLi)) return;
+          editor.addInstruction(sourceLi);
+        });
+      }
+
       editor.makeDroppable();
+    },
+
+    addInstruction: function (sourceLi) {
+      // copy a palette instruction to the end of the main program (same result as dragging it).
+      var list = getMainProgramList();
+      if (!list || !sourceLi) return;
+
+      var li = sourceLi.cloneNode(true);
+      li.classList.remove("sortable-ghost", "sortable-chosen", "lb-dragging");
+      list.appendChild(li);
+
+      // a repeat has its own inner list that also needs drag and drop.
+      if (li.querySelector("div.droppable ul")) this._ensureProgramSortables(li);
+
+      // scroll the program to show the new instruction.
+      var scrollBox = list.closest(".droppable");
+      if (scrollBox) scrollBox.scrollTop = scrollBox.scrollHeight;
+
+      playSfx("place");
+      this.saveProgram();
+    },
+
+    updateMedalCounter: function () {
+      // live instruction count + medal goals shown above the program.
+      var list = getMainProgramList();
+      var countEl = document.querySelector("#programContainer .lb-instruction-count");
+      if (!list || !countEl) return;
+
+      // every <li> counts as one, including the ones inside repeats (same rule the medals use).
+      var count = list.querySelectorAll("li").length;
+      countEl.textContent = String(count);
+
+      var goals = document.querySelector("#programContainer .lb-medal-goals");
+      if (!goals) return;
+      var limits = map.getMedals();
+      // level 0 is the tutorial and has no medals.
+      goals.hidden = !limits || Number(map.getLevelNumber()) === 0;
+      if (goals.hidden) return;
+
+      // the best medal this program would earn right now (none for an empty program).
+      var best = null;
+      if (count > 0 && count <= limits.gold) best = "gold";
+      else if (count > 0 && count <= limits.silver) best = "silver";
+      else if (count > 0 && count <= limits.bronze) best = "bronze";
+
+      forEachNode(goals.querySelectorAll(".lb-medal-goal"), function (el) {
+        var name = el.getAttribute("data-medal");
+        el.querySelector(".lb-medal-limit").textContent = String(limits[name]);
+        el.classList.toggle("lb-medal-goal--active", name === best);
+      });
     },
 
     saveProgram: function () {
       var mainProgramList = getMainProgramList();
       if (!mainProgramList) return;
+      editor.updateMedalCounter();
 
       var program = getProgramDataFromList(mainProgramList);
       var key = getStorageKey();
@@ -435,9 +505,11 @@ export function createEditor(params) {
               }
             }
 
+            playSfx("place");
             self.saveProgram();
           },
           onUpdate: function () {
+            playSfx("place");
             self.saveProgram();
           },
           onRemove: function () {
@@ -466,6 +538,7 @@ export function createEditor(params) {
         var p = li.querySelector("p");
         if (!p || !p.classList) continue;
 
+        var countBefore = out.length;
         if (p.classList.contains("walk")) {
           out.push(new instructions.WalkInstruction());
         } else if (p.classList.contains("jump")) {
@@ -490,6 +563,9 @@ export function createEditor(params) {
           var body = editor.getInstructions(bodyLis);
           out.push(new instructions.RepeatInstruction(counter, body));
         }
+
+        // remember which <li> this instruction came from, so the game can highlight it while running.
+        if (out.length > countBefore) out[out.length - 1].element = li;
       }
       return out;
     },

@@ -67,7 +67,7 @@ export function createApp() {
   // UI: dialogs/media/editor are plain objects; createUi() wires them together and exposes screen functions.
   var dialogs = createDialogs();
   var media = createMedia();
-  var editor = createEditor({ map: app.map, instructions: botInstructions });
+  var editor = createEditor({ map: app.map, instructions: botInstructions, media: media });
 
   app.ui = createUi({
     bot: app.bot,

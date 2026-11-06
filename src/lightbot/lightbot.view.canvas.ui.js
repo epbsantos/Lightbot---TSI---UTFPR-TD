@@ -215,6 +215,7 @@ export function createUi(params) {
       if (storage.getItem("lightbot_program_level_" + level)) {
         editor.loadProgram();
       }
+      editor.updateMedalCounter();
 
       ui._setRunButtonState(false);
       showScreen("gameScreen");
@@ -287,6 +288,7 @@ export function createUi(params) {
           // wipe the program and persist the empty state.
           var list = document.querySelector("#programContainer ul");
           if (list) list.textContent = "";
+          media.playSfx("remove");
           editor.saveProgram();
         });
       });

@@ -130,6 +130,11 @@ export function extendBotView(params) {
     var dX = p.x - animation.width / 2; // center image horizontally
     var dY = p.y - animation.height;
 
+    // idle "breathing": while no program is running the bot floats up and down a little (2px, ~2.5s cycle)
+    if (!bot.isInExecutionMode()) {
+      dY += Math.sin(performance.now() / 400) * 2;
+    }
+
     // round dX and dY down to avoid anti-aliasing when drawing the sprite
     app.ctx.drawImage(image, srcX, srcY, animation.width, animation.height, Math.floor(dX), Math.floor(dY), animation.width, animation.height);
   }

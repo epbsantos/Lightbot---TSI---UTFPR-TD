@@ -121,7 +121,8 @@ export const LIGHTBOT_TRANSLATIONS_PT_BR = {
   },
   "program": {
     "title": "Programa",
-    "clearAll": "Limpar tudo"
+    "clearAll": "Limpar tudo",
+    "instructionCount": "Instruções"
   },
   "dialogs": {
     "levelComplete": {

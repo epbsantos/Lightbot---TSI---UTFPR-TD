@@ -29,6 +29,11 @@ export function createMedia() {
       lightOff: [[520, 0, 0.08, "square"], [330, 0.07, 0.12, "square"]],
       jump: [[300, 0, 0.06, "triangle"], [450, 0.05, 0.06, "triangle"], [600, 0.1, 0.08, "triangle"]],
       bump: [[110, 0, 0.12, "sawtooth"]],
+      walk: [[300, 0, 0.08, "sawtooth"]],
+      turnLeft: [[600, 0, 0.08, "square"], [450, 0.08, 0.1, "square"]],
+      turnRight: [[450, 0, 0.08, "square"], [600, 0.08, 0.1, "square"]],
+      place: [[880, 0, 0.05, "triangle"], [1320, 0.04, 0.06, "triangle"]],
+      remove: [[330, 0, 0.06, "triangle"], [220, 0.05, 0.08, "triangle"]],
       levelComplete: [[523, 0, 0.12, "triangle"], [659, 0.12, 0.12, "triangle"], [784, 0.24, 0.12, "triangle"], [1047, 0.36, 0.35, "triangle"]],
       achievement: [[880, 0, 0.1, "sine"], [1175, 0.1, 0.1, "sine"], [1760, 0.2, 0.3, "sine"]]
     },
