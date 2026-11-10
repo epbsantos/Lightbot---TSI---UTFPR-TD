@@ -1,8 +1,12 @@
 // Canvas renderer + main simulation tick (60fps); drives `app.step()` and `app.draw()`.
+import { getMapFrame } from "./lightbot.view.canvas.projection.js";
 export function canvasView(app, canvas) {
   var lightBot = app;
   // set the rendering context
   lightBot.ctx = canvas.getContext('2d');
+  // Keep world coordinates fixed while giving the canvas enough physical pixels.
+  var sceneWidth = canvas.width;
+  var sceneHeight = canvas.height;
 
   // refresh rate and rendering loop
   var fps = 60;
@@ -13,16 +17,10 @@ export function canvasView(app, canvas) {
   var offsetY = 100;
 
   // create projection
-  lightBot.projection = new lightBot.Projection(canvas.height, canvas.width / 2, offsetY);
+  lightBot.projection = new lightBot.Projection(sceneHeight, sceneWidth / 2, offsetY);
 
-  // create canvas background pattern
-  var bg = null;
-
-  var tmp = new Image();
-  tmp.src = 'img/pattern.png';
-  tmp.onload = function() {
-    bg = lightBot.ctx.createPattern(tmp, 'repeat');
-  };
+  var framedMap = null;
+  var frame = null;
 
   // Atraso da tela final: depois que a última luz acende, esperamos a animação do robô
   // (mexendo na fiação) terminar e mais esta pausa, antes de mostrar a medalha/fim de fase.
@@ -31,13 +29,17 @@ export function canvasView(app, canvas) {
   var finishWaitStart = null; // instante em que a animação terminou
 
   function update() {
+    if (lightBot.bot.isPaused()) return;
     // check if we can execute the next bot instruction here?
     // (não inicia novas instruções enquanto aguardamos o final da fase)
     if (!levelFinishing && lightBot.bot.isInExecutionMode() && lightBot.bot.isReadyForNextInstruction() && lightBot.bot.hasNextInstruction()) {
       var oldPos = Object.assign({}, lightBot.bot.currentPos); // copy old position
-      var instruction = lightBot.bot.executeNextInstruction(); // execute the next instruction
+      var instruction = lightBot.bot.executeNextInstruction();
       var newPos = lightBot.bot.currentPos; // get the new position
-      lightBot.bot.animate(instruction, oldPos, newPos);
+      if (instruction) {
+        lightBot.bot.animate(instruction, oldPos, newPos);
+        lightBot.ui.onInstruction(instruction);
+      }
     }
     // check if map has been completed here
     if (lightBot.map.ready() && lightBot.map.state.allLightsOn()) {
@@ -78,6 +80,9 @@ export function canvasView(app, canvas) {
       finishWaitStart = null;
     }
     lightBot.step();
+    if (lightBot.bot.isInExecutionMode() && !lightBot.bot.hasNextInstruction() && lightBot.bot.isReadyForNextInstruction()) {
+      lightBot.ui.onProgramFinished();
+    }
     lightBot.draw();
   }
 
@@ -87,12 +92,26 @@ export function canvasView(app, canvas) {
   }
 
   function draw() {
+    var pixelRatio = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+    var backingWidth = Math.round(sceneWidth * pixelRatio);
+    var backingHeight = Math.round(sceneHeight * pixelRatio);
+    if (canvas.width !== backingWidth || canvas.height !== backingHeight) {
+      canvas.width = backingWidth;
+      canvas.height = backingHeight;
+    }
+    lightBot.ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     //clear main canvas
-    lightBot.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    lightBot.ctx.clearRect(0, 0, sceneWidth, sceneHeight);
 
-    // background
-    lightBot.ctx.fillStyle = bg;
-    lightBot.ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // The CSS surface follows the selected theme; the transparent canvas only draws the puzzle.
+    if (!lightBot.map.getMapRef()) return;
+    if (framedMap !== lightBot.map.getMapRef()) {
+      framedMap = lightBot.map.getMapRef();
+      frame = getMapFrame(lightBot.map, lightBot.projection, sceneWidth, sceneHeight);
+    }
+    lightBot.ctx.save();
+    lightBot.ctx.translate(frame.x, frame.y);
+    lightBot.ctx.scale(frame.scale, frame.scale);
 
     // draw the map and the bot in the correct order
     switch (lightBot.bot.direction) {
@@ -186,7 +205,7 @@ export function canvasView(app, canvas) {
         console.error('canvasView draw: unknown direction "' + lightBot.bot.direction + '"');
         break;
     }
-
+    lightBot.ctx.restore();
   }
 
 

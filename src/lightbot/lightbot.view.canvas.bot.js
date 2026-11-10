@@ -20,11 +20,12 @@ export function extendBotView(params) {
   image.src = 'img/sprites.png';
 
   // bot animation
-  var currentStep = 0; // # of frames since animation started
+  var currentStep = 0; // elapsed animation time at normal speed, independent of render frames
   var currentFrame = 0; // current animation frame
   var animation = animations.stand; // current animation
   var movement = {dX: 0, dY: 0, dZ: 0}; // controls bot movement during animations
 
+<<<<<<< HEAD
   function getAnimationDuration() {
     // If speed is 2x, duration is halved. If speed is 0.5x, duration is doubled.
     var d = animation.duration / app.speedMultiplier;
@@ -34,6 +35,8 @@ export function extendBotView(params) {
     return d;
   }
 
+=======
+>>>>>>> epbsantos/Rafael-Kuhn
   function animate(instruction, oldPos, newPos) {
     // set the bot to busy
     readyForNextInstruction = false;
@@ -62,10 +65,14 @@ export function extendBotView(params) {
       case instructions.LightInstruction.instructionName:
         setAnimation(animations.light);
         break;
-      // turn left, turn right, repeat
+      // Briefly hold on repeat expansion before executing its body.
+      case instructions.RepeatInstruction.instructionName:
+        setAnimation(animations.stand);
+        setMovement(0, 0, 0);
+        break;
+      // turn left, turn right
       case instructions.TurnLeftInstruction.instructionName:
       case instructions.TurnRightInstruction.instructionName:
-      case instructions.RepeatInstruction.instructionName:
         // no animation for turning
         break;
       default:
@@ -75,7 +82,8 @@ export function extendBotView(params) {
   }
 
   function step() {
-    if (currentStep >= getAnimationDuration() || !bot.isInExecutionMode()) {
+    if (bot.isPaused()) return;
+    if (currentStep >= animation.duration || !bot.isInExecutionMode()) {
       // set the bot to ready
       readyForNextInstruction = true;
 
@@ -84,30 +92,50 @@ export function extendBotView(params) {
       setMovement(0, 0, 0);
 
     } else {
+<<<<<<< HEAD
       // o frame é escolhido pelo progresso da animação (0..1), e não por um intervalo fixo:
       // assim o ciclo completo de frames sempre toca, em qualquer velocidade do jogo.
       var progress = currentStep / getAnimationDuration();
       currentFrame = Math.min(Math.floor(progress * animation.totalFrames), animation.totalFrames - 1);
       currentStep++;
+=======
+      // Speed affects only future progress; changing it never reinterprets elapsed time.
+      currentStep = Math.min(currentStep + app.speedMultiplier, animation.duration);
+      var nbrFrame = Math.floor(currentStep / animation.step);
+      if (animation.loop) {
+        if (animation.name === 'walk') {
+          // walk has special rule since order of frames is 0, 1, 2, 1, 2, 1, 2 ...
+          if (nbrFrame < animation.totalFrames) {
+            currentFrame = nbrFrame % (animation.totalFrames);
+          } else {
+            currentFrame = (nbrFrame + 1) % (animation.totalFrames - 1) + 1;
+          }
+        } else {
+          currentFrame = nbrFrame % animation.totalFrames;
+        }
+      } else {
+        currentFrame = Math.min(nbrFrame, animation.totalFrames - 1);
+      }
+>>>>>>> epbsantos/Rafael-Kuhn
     }
   }
 
   function getMovementOffset() {
-    var effectiveDuration = getAnimationDuration();
+    var progress = currentStep / animation.duration;
     var offset = {
-      x: currentStep / effectiveDuration * movement.dX,
-      y: currentStep / effectiveDuration * movement.dY,
-      z: currentStep / effectiveDuration * movement.dZ
+      x: progress * movement.dX,
+      y: progress * movement.dY,
+      z: progress * movement.dZ
     };
 
     // modify y offset during jump animations for a more natural movement
     if (animation.name === "jumpUp") {
       // jump up y movement is defined by f(x) = x^0.3 from 0 to 1: http://www.wolframalpha.com/input/?i=x%5E0.3+from+0+to+1
-      offset.y = Math.pow(currentStep / effectiveDuration, 0.3) * movement.dY;
+      offset.y = Math.pow(progress, 0.3) * movement.dY;
     }
     if (animation.name === "jumpDown") {
       // jump down y movement is defined by f(x) = x^4 from 0 to 1: http://www.wolframalpha.com/input/?i=f%28x%29+%3D+x%5E4+from+0+to+1
-      offset.y = Math.pow(currentStep / effectiveDuration, 4) * movement.dY;
+      offset.y = Math.pow(progress, 4) * movement.dY;
     }
     return offset;
   }
