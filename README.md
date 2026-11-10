@@ -1,4 +1,4 @@
-# Lightbot
+# Lightbot - TSI - UTFPR-TD
 
 Lightbot is an educational puzzle game about programming and logical thinking.
 
@@ -6,6 +6,23 @@ The player controls a small robot and must guide it to light up all blue tiles i
 Instead of moving the robot directly, you build a **program** from simple instructions  
 (move, turn, jump, light up, repeat, etc.). This makes Lightbot well-suited for
 introductory courses on algorithms, control flow, and problem decomposition.
+
+---
+
+## Old games
+- [Lightbot 1](http://maverick.td.utfpr.edu.br/tsi/old/lb/)
+- [Lightbot 2](https://armorgames.com/play/6061/light-bot-20)
+
+
+---
+
+## idéias para o trabalho
+- Novos comandos
+- Novas fases (grupos de fases)
+- Documentação do código (para turmas futuras)
+- Melhorar os themas
+- Novos personages
+- Novas sons
 
 ---
 

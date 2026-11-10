@@ -22,10 +22,17 @@ export function canvasView(app, canvas) {
   var framedMap = null;
   var frame = null;
 
+  // Atraso da tela final: depois que a última luz acende, esperamos a animação do robô
+  // (mexendo na fiação) terminar e mais esta pausa, antes de mostrar a medalha/fim de fase.
+  var FINISH_DELAY_MS = 700;
+  var levelFinishing = false; // true enquanto aguardamos o fim da animação final
+  var finishWaitStart = null; // instante em que a animação terminou
+
   function update() {
     if (lightBot.bot.isPaused()) return;
     // check if we can execute the next bot instruction here?
-    if (lightBot.bot.isInExecutionMode() && lightBot.bot.isReadyForNextInstruction() && lightBot.bot.hasNextInstruction()) {
+    // (não inicia novas instruções enquanto aguardamos o final da fase)
+    if (!levelFinishing && lightBot.bot.isInExecutionMode() && lightBot.bot.isReadyForNextInstruction() && lightBot.bot.hasNextInstruction()) {
       var oldPos = Object.assign({}, lightBot.bot.currentPos); // copy old position
       var instruction = lightBot.bot.executeNextInstruction();
       var newPos = lightBot.bot.currentPos; // get the new position
@@ -36,6 +43,22 @@ export function canvasView(app, canvas) {
     }
     // check if map has been completed here
     if (lightBot.map.ready() && lightBot.map.state.allLightsOn()) {
+      levelFinishing = true;
+
+      // espera a animação atual (ex.: ligando a luz) terminar, mais uma pausa curta
+      var now = performance.now();
+      if (!lightBot.bot.isReadyForNextInstruction()) {
+        finishWaitStart = null;
+      } else if (finishWaitStart === null) {
+        finishWaitStart = now;
+      }
+      if (finishWaitStart === null || now - finishWaitStart < FINISH_DELAY_MS / lightBot.speedMultiplier) {
+        lightBot.step();
+        lightBot.draw();
+        return;
+      }
+      levelFinishing = false;
+      finishWaitStart = null;
 
       // stop the bot
       lightBot.bot.clearExecutionQueue();
@@ -52,6 +75,9 @@ export function canvasView(app, canvas) {
       lightBot.map.complete();
 
       // return to map selection screen
+    } else {
+      levelFinishing = false;
+      finishWaitStart = null;
     }
     lightBot.step();
     if (lightBot.bot.isInExecutionMode() && !lightBot.bot.hasNextInstruction() && lightBot.bot.isReadyForNextInstruction()) {

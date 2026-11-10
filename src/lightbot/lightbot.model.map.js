@@ -1,4 +1,4 @@
-// Map model: holds level definitions, builds the in-memory tile grid, and resets/completes levels.
+﻿// Map model: holds level definitions, builds the in-memory tile grid, and resets/completes levels.
 
 export function createMap(params) {
   if (!params) throw new Error("createMap: missing params");
@@ -315,6 +315,24 @@ export function createMap(params) {
       "bronze": 43
     }
   }
+  ,
+  {
+    "direction": 0,
+    "position": {"x": 0, "y": 0},
+    "map": [
+      [{"h":1, "t":"b"}, {"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"}],
+      [{"h":1, "t":"b"}, {"h":4, "t":"l"},{"h":3, "t":"b"},{"h":3, "t":"b"},{"h":3, "t":"b"},{"h":3, "t":"b"},{"h":1, "t":"b"}],
+      [{"h":1, "t":"b"}, {"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":3, "t":"b"},{"h":1, "t":"b"}],
+      [{"h":1, "t":"b"}, {"h":1, "t":"b"},{"h":2, "t":"b"},{"h":3, "t":"b"},{"h":3, "t":"b"},{"h":3, "t":"b"},{"h":1, "t":"b"}],
+      [{"h":1, "t":"b"}, {"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"}],
+      [{"h":1, "t":"b"}, {"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"},{"h":1, "t":"b"}]
+    ],
+    "medals": {
+      "gold": 5,
+      "silver": 7,
+      "bronze": 9
+    }
+  }
 ];
 
   var levelSize = {'x': 0, 'y': 0}; // the level size
@@ -412,3 +430,4 @@ export function createMap(params) {
 
   return map;
 }
+

@@ -25,6 +25,18 @@ export function extendBotView(params) {
   var animation = animations.stand; // current animation
   var movement = {dX: 0, dY: 0, dZ: 0}; // controls bot movement during animations
 
+<<<<<<< HEAD
+  function getAnimationDuration() {
+    // If speed is 2x, duration is halved. If speed is 0.5x, duration is doubled.
+    var d = animation.duration / app.speedMultiplier;
+    // animações com minDuration (ex.: ligar a luz) nunca ficam mais curtas que isso,
+    // para que o robô sempre dê tempo de ser visto mexendo na fiação, mesmo em velocidade alta.
+    if (animation.minDuration) d = Math.max(d, animation.minDuration);
+    return d;
+  }
+
+=======
+>>>>>>> epbsantos/Rafael-Kuhn
   function animate(instruction, oldPos, newPos) {
     // set the bot to busy
     readyForNextInstruction = false;
@@ -80,6 +92,13 @@ export function extendBotView(params) {
       setMovement(0, 0, 0);
 
     } else {
+<<<<<<< HEAD
+      // o frame é escolhido pelo progresso da animação (0..1), e não por um intervalo fixo:
+      // assim o ciclo completo de frames sempre toca, em qualquer velocidade do jogo.
+      var progress = currentStep / getAnimationDuration();
+      currentFrame = Math.min(Math.floor(progress * animation.totalFrames), animation.totalFrames - 1);
+      currentStep++;
+=======
       // Speed affects only future progress; changing it never reinterprets elapsed time.
       currentStep = Math.min(currentStep + app.speedMultiplier, animation.duration);
       var nbrFrame = Math.floor(currentStep / animation.step);
@@ -97,6 +116,7 @@ export function extendBotView(params) {
       } else {
         currentFrame = Math.min(nbrFrame, animation.totalFrames - 1);
       }
+>>>>>>> epbsantos/Rafael-Kuhn
     }
   }
 
