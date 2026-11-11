@@ -164,7 +164,8 @@ export const LIGHTBOT_TRANSLATIONS_EN = {
     "placeholder": "Drop your instructions here"
   },
   "program": {
-    "title": "Program"
+    "title": "Program",
+    "clearAll": "Clear all"
   },
   "dialogs": {
     "levelComplete": {

@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lightbot v1.5.0</title>
   <link rel="shortcut icon" href="img/favicon.ico" />
+  <!-- Hide the page until main.js has applied the stylesheet (avoids a flash of unstyled content in dev). -->
+  <style>html:not(.lb-ready) body { visibility: hidden; }</style>
   <script>
     (function () {
       try {
@@ -72,9 +74,12 @@
           <label for="languageSelect" class="sr-only" data-i18n="welcomeScreen.language"></label>
           <select id="languageSelect" class="welcome-select"
             data-i18n-title="welcomeScreen.language" title="Language">
+            <option value="pt_br">Português (BR)</option>
             <option value="en">English</option>
+            <option value="es">Español</option>
             <option value="de">Deutsch</option>
             <option value="fr">Français</option>
+            <option value="jp">日本語</option>
             <option value="sr-Latn" lang="sr-Latn">Srpski (latinica)</option>
             <option value="sr-Cyrl" lang="sr-Cyrl">Српски (ћирилица)</option>
           </select>
@@ -371,6 +376,9 @@
                     <p class="repeat lb-instruction-row" tabindex="0" role="button" data-i18n-title="instructions.repeat.label">
                       <svg class="instruction-symbol" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="m17 3 4 4-4 4M3 11V9a2 2 0 0 1 2-2h16M7 21l-4-4 4-4m14 0v2a2 2 0 0 1-2 2H3" /></svg>
                       <span class="lb-repeat-left flex items-center gap-2">
+                        <svg viewBox="0 0 512 512" width="32" height="32">
+                          <use href="/img/program-icons/loop.svg#icon"></use>
+                        </svg>
                         <span class="lb-instruction-label" data-i18n="instructions.repeat.label"></span>
                         <span class="lb-repeat-count">
                           <button type="button" data-repeat-step="-1" data-i18n-title="gameScreen.decreaseRepeat">

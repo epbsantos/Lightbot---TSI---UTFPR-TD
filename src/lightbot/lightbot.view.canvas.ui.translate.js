@@ -2,7 +2,10 @@
 import i18next from "i18next";
 import { LIGHTBOT_TRANSLATIONS_DE } from "../locales/translations.de.js";
 import { LIGHTBOT_TRANSLATIONS_EN } from "../locales/translations.en.js";
+import { LIGHTBOT_TRANSLATIONS_ES } from "../locales/translations.es.js";
 import { LIGHTBOT_TRANSLATIONS_FR } from "../locales/translations.fr.js";
+import { LIGHTBOT_TRANSLATIONS_JP } from "../locales/translations.jp.js";
+import { LIGHTBOT_TRANSLATIONS_PT_BR } from "../locales/translations.pt.js";
 import { LIGHTBOT_TRANSLATIONS_SRB_LAT } from "../locales/translations.srb_lat.js";
 import { LIGHTBOT_TRANSLATIONS_SRB_CIR } from "../locales/translations.srb_cir.js";
 
@@ -12,11 +15,20 @@ var TRANSLATION_RESOURCES = {
   en: {
     translation: LIGHTBOT_TRANSLATIONS_EN,
   },
+  es: {
+    translation: LIGHTBOT_TRANSLATIONS_ES,
+  },
   de: {
     translation: LIGHTBOT_TRANSLATIONS_DE,
   },
   fr: {
     translation: LIGHTBOT_TRANSLATIONS_FR,
+  },
+  jp: { 
+    translation: LIGHTBOT_TRANSLATIONS_JP
+  },
+  pt_br: { 
+    translation: LIGHTBOT_TRANSLATIONS_PT_BR
   },
   "sr-Latn": {
     translation: LIGHTBOT_TRANSLATIONS_SRB_LAT,
@@ -38,21 +50,42 @@ function applyTranslations() {
   });
 }
 
+// Browser language codes that don't match our resource keys directly.
+var LANGUAGE_ALIASES = {
+  pt: "pt_br",
+  "pt-br": "pt_br",
+  "pt-pt": "pt_br",
+  ja: "jp",
+};
+
 function resolveLanguage(language) {
   if (!language) return null;
-  // Retain saved selections from the original Serbian contributions.
   var aliases = { srb_lat: "sr-Latn", srb_cir: "sr-Cyrl" };
-  var normalized = String(language).trim().toLowerCase();
+  var normalized = String(language).trim().toLowerCase().replace("_", "-");
   if (aliases[normalized] && TRANSLATION_RESOURCES[aliases[normalized]]) return aliases[normalized];
+  if (LANGUAGE_ALIASES[normalized]) return LANGUAGE_ALIASES[normalized];
   try {
-    // Preserve the script when normalizing regional tags such as sr-Latn-RS.
     var locale = new Intl.Locale(normalized);
     var languageAndScript = locale.language + (locale.script ? "-" + locale.script : "");
     if (TRANSLATION_RESOURCES[languageAndScript]) return languageAndScript;
     if (locale.language === "sr" && !locale.script && TRANSLATION_RESOURCES["sr-Cyrl"]) return "sr-Cyrl";
     if (TRANSLATION_RESOURCES[locale.language]) return locale.language;
+    if (LANGUAGE_ALIASES[locale.language]) return LANGUAGE_ALIASES[locale.language];
   } catch (e) {
-    // Invalid stored language tags use the normal fallback language.
+    return null;
+  }
+  return null;
+}
+
+function detectBrowserLanguage() {
+  var candidates = [];
+  if (typeof navigator !== "undefined") {
+    if (Array.isArray(navigator.languages)) candidates = candidates.concat(navigator.languages);
+    if (navigator.language) candidates.push(navigator.language);
+  }
+  for (var i = 0; i < candidates.length; i++) {
+    var resolved = resolveLanguage(candidates[i]);
+    if (resolved) return resolved;
   }
   return null;
 }
@@ -68,7 +101,7 @@ function getStoredLanguage() {
 function setStoredLanguage(language) {
   try {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-  } catch (e) {}
+  } catch (e) { }
 }
 
 function updateDocumentLanguage(language) {
@@ -111,7 +144,7 @@ function initLanguageSelect() {
 }
 
 export function initI18n() {
-  var storedLanguage = resolveLanguage(getStoredLanguage()) || FALLBACK_LANGUAGE;
+  var storedLanguage = resolveLanguage(getStoredLanguage()) || detectBrowserLanguage() || FALLBACK_LANGUAGE;
   i18next.on("languageChanged", handleLanguageChange);
 
   return i18next

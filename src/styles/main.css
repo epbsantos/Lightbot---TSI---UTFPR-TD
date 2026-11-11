@@ -10,25 +10,26 @@
 @plugin "daisyui/theme" {
   name: "lightbot";
   prefersdark: false;
-  color-scheme: dark;
+ 
+  color-scheme: dark; 
 
-  /* Shared Lightbot palette: every screen inherits the same surfaces and controls. */
-  --color-base-100: #0c292d;
-  --color-base-200: #163b40;
-  --color-base-300: #245158;
-  --color-base-content: #c3dedb;
+  /* Paleta de Cores Arcade/Neon (Nova) */
+  --color-base-100: #1a1a2e;
+  --color-base-200: #16213e; 
+  --color-base-300: #0f3460; 
+  --color-base-content: #fffff2;
 
-  --color-primary: #b4e0d4;
-  --color-primary-content: #123333;
+  --color-primary: #00ffcc; 
+  --color-primary-content: #1a1a2e;
 
-  --color-secondary: #7ca6ba;
+  --color-secondary: #ff00ff; 
   --color-secondary-content: #fffff2;
 
   --color-accent: #e59700;
   --color-accent-content: #222222;
 
-  --color-neutral: #0c292d;
-  --color-neutral-content: #c3dedb;
+  --color-neutral: #4b4646;
+  --color-neutral-content: #fffff2;
 
   --color-info: #7ca6ba;
   --color-info-content: #222222;
@@ -53,7 +54,17 @@
 
   /* effects */
   --depth: 1;
-  --noise: 0;
+  --noise: 1; 
+}
+
+@keyframes ouro-brilhante {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(229, 151, 0, 0.4)); }
+  50% { filter: drop-shadow(0 0 8px rgba(229, 151, 0, 0.9)) brightness(1.2); }
+}
+
+@keyframes pulse-drop {
+  0%, 100% { outline-color: var(--color-primary); }
+  50% { outline-color: color-mix(in oklab, var(--color-primary) 40%, transparent); }
 }
 
 /* Non-Tailwind assets / legacy helpers kept as small component classes */
@@ -757,26 +768,3 @@
   .game-screen.is-executing .lb-instruction-delete { visibility: hidden; }
   .game-screen :is(button, input, [role="button"]):focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 }
-
-[data-theme="cupcake"]   body { background-image: url("public/img/themes/cupcake.jpg"); }
-[data-theme="bumblebee"] body { background-image: url("public/img/themes/bumblebee.jpg"); }
-[data-theme="emerald"]   body { background-image: url("public/img/themes/emerald.jpg"); }
-[data-theme="corporate"] body { background-image: url("public/img/themes/corporate.jpg"); }
-[data-theme="synthwave"] body { background-image: url("public/img/themes/synthwave.jpg"); }
-[data-theme="retro"]     body { background-image: url("public/img/themes/retro.jpg"); }
-[data-theme="cyberpunk"] body { background-image: url("public/img/themes/cyberpunk.jpg"); }
-[data-theme="valentine"] body { background-image: url("public/img/themes/valentine.jpg"); }
-[data-theme="halloween"] body { background-image: url("public/img/themes/halloween.jpg"); }
-[data-theme="garden"]    body { background-image: url("public/img/themes/garden.jpg"); }
-[data-theme="forest"]    body { background-image: url("public/img/themes/forest.jpg"); }
-[data-theme="aqua"]      body { background-image: url("public/img/themes/aqua.jpg"); }
-[data-theme="lofi"]      body { background-image: url("public/img/themes/lofi.jpg"); }
-[data-theme="pastel"]    body { background-image: url("public/img/themes/pastel.jpg"); }
-[data-theme="fantasy"]   body { background-image: url("public/img/themes/fantasy.jpg"); }
-[data-theme="wireframe"] body { background-image: url("public/img/themes/wireframe.jpg"); }
-[data-theme="black"]     body { background-image: url("public/img/themes/black.jpg"); }
-[data-theme="luxury"]    body { background-image: url("public/img/themes/luxury.jpg"); }
-[data-theme="dracula"]   body { background-image: url("public/img/themes/dracula.jpg"); }
-[data-theme="coffee"]    body { background-image: url("public/img/themes/coffee.jpg"); }
-[data-theme="winter"]    body { background-image: url("public/img/themes/winter.jpg"); }
-[data-theme="cmyk"]       body { background-image: url("public/img/themes/cmyk.jpg"); }

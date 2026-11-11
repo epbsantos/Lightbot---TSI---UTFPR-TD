@@ -31,6 +31,7 @@ export function canvasView(app, canvas) {
       var newPos = lightBot.bot.currentPos; // get the new position
       if (instruction) {
         lightBot.bot.animate(instruction, oldPos, newPos);
+        playInstructionSfx(instruction, oldPos, newPos);
         lightBot.ui.onInstruction(instruction);
       }
     }
@@ -48,6 +49,12 @@ export function canvasView(app, canvas) {
       var achievements = lightBot.achievements.awardAchievements();
       lightBot.achievements.display(achievements);
 
+      // celebrate with sound effects
+      playSfx('levelComplete');
+      if (achievements && achievements.length > 0) {
+        setTimeout(function() { playSfx('achievement'); }, 900);
+      }
+
       // set the map as complete
       lightBot.map.complete();
 
@@ -58,6 +65,32 @@ export function canvasView(app, canvas) {
       lightBot.ui.onProgramFinished();
     }
     lightBot.draw();
+  }
+
+  function playSfx(name) {
+    var media = lightBot.ui && lightBot.ui.media;
+    if (media && typeof media.playSfx === 'function') media.playSfx(name);
+  }
+
+  // Plays a sound effect matching what the instruction just did.
+  function playInstructionSfx(instruction, oldPos, newPos) {
+    if (!instruction) return;
+    var moved = oldPos.x !== newPos.x || oldPos.y !== newPos.y;
+    switch (instruction.name) {
+      case 'light': {
+        var tile = lightBot.map.getMapRef()[newPos.x][newPos.y];
+        if (tile instanceof lightBot.LightBox) playSfx(tile.lightOn ? 'lightOn' : 'lightOff');
+        break;
+      }
+      case 'jump':
+        playSfx(moved ? 'jump' : 'bump');
+        break;
+      case 'walk':
+        if (!moved) playSfx('bump');
+        break;
+      default:
+        break;
+    }
   }
 
   function step() {
