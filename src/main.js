@@ -4,7 +4,9 @@ import { initThemeBackground } from "./lightbot/lightbot.theme.background.js";
 
 var assetBaseUrl = import.meta.env.BASE_URL || "/";
 document.documentElement.style.setProperty("--lb-achievement-bg", 'url("' + assetBaseUrl + 'img/achievement.png")');
-document.documentElement.style.setProperty("--lb-medals-bg", 'url("' + assetBaseUrl + 'img/medals.png")');
+["gold", "silver", "bronze"].forEach(function (metal) {
+  document.documentElement.style.setProperty("--lb-medal-" + metal + "-bg", 'url("' + assetBaseUrl + 'img/medals/' + metal + '.png")');
+});
 
 import { themeChange } from "theme-change";
 
