@@ -757,14 +757,6 @@
   .game-screen.is-executing .lb-instruction-delete { visibility: hidden; }
   .game-screen :is(button, input, [role="button"]):focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 }
-body {
-  background-image: var(--lb-theme-bg, none);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  transition: background-image 0.3s;
-}
 
 [data-theme="cupcake"]   body { background-image: url("public/img/themes/cupcake.jpg"); }
 [data-theme="bumblebee"] body { background-image: url("public/img/themes/bumblebee.jpg"); }
