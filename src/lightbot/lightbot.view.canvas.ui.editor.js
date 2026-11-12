@@ -1,5 +1,10 @@
 // Drag/drop editor for the program: uses SortableJS and persists per-level state to localStorage.
 import Sortable from "sortablejs";
+import {
+  parseCodeToProgramData,
+  programDataToCode,
+  getSnippetForInstruction,
+} from "./lightbot.code.parser.js";
 
 export function createEditor(params) {
   if (!params) throw new Error("createEditor: missing params");
@@ -20,7 +25,7 @@ export function createEditor(params) {
     // main program list only (not nested repeat bodies).
     var container = document.getElementById("programContainer");
     if (!container) return null;
-    return container.querySelector(".game-program-body > .droppable > ul");
+    return container.querySelector("#mainProgram") || container.querySelector(".game-program-body > .droppable > ul");
   }
 
   function getAllProgramLists() {
@@ -174,11 +179,107 @@ export function createEditor(params) {
   }
 
   var editor = {
+    _mode: "blocks",
     _instructionSortable: null,
     _programSortables: [],
     _executing: false,
     _activeRow: null,
     _suppressClickUntil: 0,
+
+    getMode: function () {
+      return this._mode;
+    },
+
+    setMode: function (mode) {
+      if (this._executing) return false;
+      if (mode !== "blocks" && mode !== "code") return false;
+      if (mode === this._mode) return true;
+
+      var mainProgramList = getMainProgramList();
+      var codeEditor = document.getElementById("codeEditor");
+      var codeError = document.getElementById("codeError");
+      var tabBlocks = document.getElementById("tabBlocks");
+      var tabCode = document.getElementById("tabCode");
+      var blocksView = document.getElementById("blocksView");
+      var codeView = document.getElementById("codeView");
+
+      if (mode === "code") {
+        var programData = getProgramDataFromList(mainProgramList);
+        var code = programDataToCode(programData);
+        if (codeEditor) {
+          codeEditor.value = code;
+        }
+        if (codeError) {
+          codeError.textContent = "";
+          codeError.classList.add("hidden");
+        }
+        this._mode = "code";
+        if (tabBlocks) {
+          tabBlocks.classList.remove("is-active");
+          tabBlocks.setAttribute("aria-selected", "false");
+        }
+        if (tabCode) {
+          tabCode.classList.add("is-active");
+          tabCode.setAttribute("aria-selected", "true");
+        }
+        if (blocksView) blocksView.classList.add("hidden");
+        if (codeView) {
+          codeView.classList.remove("hidden");
+          if (codeEditor) codeEditor.focus();
+        }
+        return true;
+      } else {
+        if (codeEditor) {
+          var parseResult = parseCodeToProgramData(codeEditor.value);
+          if (!parseResult.success) {
+            if (codeError) {
+              codeError.textContent = parseResult.error;
+              codeError.classList.remove("hidden");
+            }
+            return false;
+          }
+          if (codeError) {
+            codeError.textContent = "";
+            codeError.classList.add("hidden");
+          }
+          if (mainProgramList) {
+            mainProgramList.textContent = "";
+            buildProgramListFromData(mainProgramList, parseResult.program);
+          }
+          this._normalizeRepeatRows(document.getElementById("programContainer"));
+          this._prepareProgramRows();
+          this.makeDroppable();
+          this.saveProgram();
+        }
+
+        this._mode = "blocks";
+        if (tabCode) {
+          tabCode.classList.remove("is-active");
+          tabCode.setAttribute("aria-selected", "false");
+        }
+        if (tabBlocks) {
+          tabBlocks.classList.add("is-active");
+          tabBlocks.setAttribute("aria-selected", "true");
+        }
+        if (codeView) codeView.classList.add("hidden");
+        if (blocksView) blocksView.classList.remove("hidden");
+        return true;
+      }
+    },
+
+    clearProgram: function () {
+      var mainProgramList = getMainProgramList();
+      if (mainProgramList) mainProgramList.textContent = "";
+      var codeEditor = document.getElementById("codeEditor");
+      if (codeEditor) codeEditor.value = "";
+      var codeError = document.getElementById("codeError");
+      if (codeError) {
+        codeError.textContent = "";
+        codeError.classList.add("hidden");
+      }
+      this._cleanupProgramSortables();
+      this.saveProgram();
+    },
 
     _prepareProgramRows: function () {
       document.querySelectorAll("#programContainer .lb-instruction-row").forEach(function (row) {
@@ -192,8 +293,16 @@ export function createEditor(params) {
       this._executing = executing;
       var palette = document.getElementById("instructionsContainer");
       var program = getMainProgramList();
+      var codeEditor = document.getElementById("codeEditor");
+      var tabBlocks = document.getElementById("tabBlocks");
+      var tabCode = document.getElementById("tabCode");
+
       if (palette) palette.inert = executing;
       if (program) program.inert = executing;
+      if (codeEditor) codeEditor.readOnly = executing;
+      if (tabBlocks) tabBlocks.disabled = executing;
+      if (tabCode) tabCode.disabled = executing;
+
       if (this._instructionSortable) this._instructionSortable.option("disabled", executing);
       this._programSortables.forEach(function (sortable) { sortable.option("disabled", executing); });
       if (!executing) {
@@ -265,6 +374,33 @@ export function createEditor(params) {
     },
 
     getProgramInstructions: function () {
+      if (this._mode === "code") {
+        var codeEditor = document.getElementById("codeEditor");
+        var codeError = document.getElementById("codeError");
+        var parseResult = parseCodeToProgramData(codeEditor ? codeEditor.value : "");
+        if (!parseResult.success) {
+          if (codeError) {
+            codeError.textContent = parseResult.error;
+            codeError.classList.remove("hidden");
+          }
+          return [];
+        }
+        if (codeError) {
+          codeError.textContent = "";
+          codeError.classList.add("hidden");
+        }
+        var mainProgramList = getMainProgramList();
+        if (mainProgramList) {
+          mainProgramList.textContent = "";
+          buildProgramListFromData(mainProgramList, parseResult.program);
+          this._normalizeRepeatRows(document.getElementById("programContainer"));
+          this._prepareProgramRows();
+          this.makeDroppable();
+          this.saveProgram();
+        }
+        return this.getInstructions(getListItems(mainProgramList));
+      }
+
       var list = getMainProgramList();
       return this.getInstructions(getListItems(list));
     },
@@ -281,6 +417,34 @@ export function createEditor(params) {
         if (!row || !palette.contains(row)) return;
         if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return;
         e.preventDefault();
+
+        if (editor._mode === "code") {
+          var codeEditor = document.getElementById("codeEditor");
+          if (!codeEditor) return;
+          var type = "";
+          if (row.classList.contains("walk")) type = "walk";
+          else if (row.classList.contains("jump")) type = "jump";
+          else if (row.classList.contains("light")) type = "light";
+          else if (row.classList.contains("turnLeft")) type = "turnLeft";
+          else if (row.classList.contains("turnRight")) type = "turnRight";
+          else if (row.classList.contains("repeat")) type = "repeat";
+
+          if (!type) return;
+          var snippet = getSnippetForInstruction(type);
+          var start = codeEditor.selectionStart != null ? codeEditor.selectionStart : codeEditor.value.length;
+          var end = codeEditor.selectionEnd != null ? codeEditor.selectionEnd : start;
+          var val = codeEditor.value;
+          codeEditor.value = val.substring(0, start) + snippet + val.substring(end);
+          codeEditor.selectionStart = codeEditor.selectionEnd = start + snippet.length;
+          codeEditor.focus();
+          var codeError = document.getElementById("codeError");
+          if (codeError) {
+            codeError.textContent = "";
+            codeError.classList.add("hidden");
+          }
+          return;
+        }
+
         var list = getMainProgramList();
         if (!list) return;
         var item = row.closest("li").cloneNode(true);
@@ -326,6 +490,40 @@ export function createEditor(params) {
         editor._cleanupProgramSortables();
         editor.saveProgram();
       });
+
+      var tabBlocks = document.getElementById("tabBlocks");
+      if (tabBlocks) {
+        tabBlocks.addEventListener("click", function () {
+          editor.setMode("blocks");
+        });
+      }
+
+      var tabCode = document.getElementById("tabCode");
+      if (tabCode) {
+        tabCode.addEventListener("click", function () {
+          editor.setMode("code");
+        });
+      }
+
+      var codeEditor = document.getElementById("codeEditor");
+      if (codeEditor) {
+        codeEditor.addEventListener("keydown", function (e) {
+          if (e.key === "Tab") {
+            e.preventDefault();
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.substring(0, start) + "  " + this.value.substring(end);
+            this.selectionStart = this.selectionEnd = start + 2;
+          }
+        });
+        codeEditor.addEventListener("input", function () {
+          var codeError = document.getElementById("codeError");
+          if (codeError && !codeError.classList.contains("hidden")) {
+            codeError.textContent = "";
+            codeError.classList.add("hidden");
+          }
+        });
+      }
 
       editor.makeDroppable();
     },
@@ -390,6 +588,16 @@ export function createEditor(params) {
       this._normalizeRepeatRows(document.getElementById("programContainer"));
       this._prepareProgramRows();
       this.makeDroppable();
+
+      var codeEditor = document.getElementById("codeEditor");
+      if (codeEditor) {
+        codeEditor.value = programDataToCode(getProgramDataFromList(mainProgramList));
+      }
+      var codeError = document.getElementById("codeError");
+      if (codeError) {
+        codeError.textContent = "";
+        codeError.classList.add("hidden");
+      }
     },
 
     _cleanupProgramSortables: function () {

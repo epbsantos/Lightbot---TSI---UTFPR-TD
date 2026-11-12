@@ -425,9 +425,13 @@ export function createUi(params) {
         clearButton.addEventListener("click", function () {
           if (bot.isInExecutionMode()) return;
           // wipe the program and persist the empty state.
-          var list = document.querySelector("#programContainer ul");
-          if (list) list.textContent = "";
-          editor.saveProgram();
+          if (typeof editor.clearProgram === "function") {
+            editor.clearProgram();
+          } else {
+            var list = document.querySelector("#programContainer ul");
+            if (list) list.textContent = "";
+            editor.saveProgram();
+          }
         });
       }
 
