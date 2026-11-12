@@ -24,11 +24,11 @@ var TRANSLATION_RESOURCES = {
   fr: {
     translation: LIGHTBOT_TRANSLATIONS_FR,
   },
-  jp: { 
-    translation: LIGHTBOT_TRANSLATIONS_JP
+  ja: {
+    translation: LIGHTBOT_TRANSLATIONS_JP,
   },
-  pt_br: { 
-    translation: LIGHTBOT_TRANSLATIONS_PT_BR
+  "pt-BR": {
+    translation: LIGHTBOT_TRANSLATIONS_PT_BR,
   },
   "sr-Latn": {
     translation: LIGHTBOT_TRANSLATIONS_SRB_LAT,
@@ -50,19 +50,20 @@ function applyTranslations() {
   });
 }
 
-// Browser language codes that don't match our resource keys directly.
+// Language codes that don't match our resource keys directly (keys are lowercase, "_" already replaced by "-").
+// Includes legacy values that may still be saved in localStorage ("srb_lat", "pt_br", "jp").
 var LANGUAGE_ALIASES = {
-  pt: "pt_br",
-  "pt-br": "pt_br",
-  "pt-pt": "pt_br",
-  ja: "jp",
+  "srb-lat": "sr-Latn",
+  "srb-cir": "sr-Cyrl",
+  pt: "pt-BR",
+  "pt-br": "pt-BR",
+  "pt-pt": "pt-BR",
+  jp: "ja",
 };
 
 function resolveLanguage(language) {
   if (!language) return null;
-  var aliases = { srb_lat: "sr-Latn", srb_cir: "sr-Cyrl" };
-  var normalized = String(language).trim().toLowerCase().replace("_", "-");
-  if (aliases[normalized] && TRANSLATION_RESOURCES[aliases[normalized]]) return aliases[normalized];
+  var normalized = String(language).trim().toLowerCase().replace(/_/g, "-");
   if (LANGUAGE_ALIASES[normalized]) return LANGUAGE_ALIASES[normalized];
   try {
     var locale = new Intl.Locale(normalized);
