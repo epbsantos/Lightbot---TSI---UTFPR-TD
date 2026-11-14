@@ -6,10 +6,12 @@ export function createBot(params) {
   var getMap = params.getMap;
   var instructions = params.instructions;
   var LightBox = params.LightBox;
+  var BadBox = params.BadBox;
   if (!directions) throw new Error("createBot: missing directions");
   if (typeof getMap !== "function") throw new Error("createBot: missing getMap()");
   if (!instructions) throw new Error("createBot: missing instructions");
   if (!LightBox) throw new Error("createBot: missing LightBox");
+  if (!BadBox) throw new Error("createBot: missing BadBox");
 
   function cloneShallowIncludingInherited(obj) {
     var out = {};
@@ -194,6 +196,8 @@ export function createBot(params) {
       var tmp = m.getMapRef()[this.currentPos.x][this.currentPos.y];
       if (tmp instanceof LightBox) {
         tmp.toggleLight();
+      }else if (tmp instanceof BadBox) {
+        tmp.toggleBad();
       }
     },
     turnLeft: function() {

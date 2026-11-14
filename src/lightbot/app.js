@@ -3,6 +3,7 @@ import { createAppShell } from "./lightbot.model.game.js";
 import { createDirections } from "./lightbot.model.directions.js";
 import { createBox } from "./lightbot.model.box.js";
 import { createLightBox } from "./lightbot.model.lightbox.js";
+import { createBadBox } from "./lightbot.model.badbox.js";
 import { createBotInstructions } from "./lightbot.model.bot.instructions.js";
 import { createBot } from "./lightbot.model.bot.js";
 import { createMap } from "./lightbot.model.map.js";
@@ -30,7 +31,7 @@ export function createApp() {
 
   app.Box = createBox();
   app.LightBox = createLightBox({ Box: app.Box });
-
+  app.BadBox = createBadBox({ Box: app.Box });
   // Bot depends on map access, and map creation calls back into bot.init(). We break the cycle with `getMap()`.
   var botInstructions = createBotInstructions();
   var map = null;
@@ -40,10 +41,11 @@ export function createApp() {
     getMap: function () { return map; },
     instructions: botInstructions,
     LightBox: app.LightBox,
+    BadBox: app.BadBox,
   });
 
-  map = createMap({ bot: app.bot, Box: app.Box, LightBox: app.LightBox });
-  map.state = createMapState({ map: map, LightBox: app.LightBox });
+  map = createMap({ bot: app.bot, Box: app.Box, LightBox: app.LightBox, BadBox: app.BadBox });
+  map.state = createMapState({ map: map, LightBox: app.LightBox, BadBox: app.BadBox });
   app.map = map;
 
   // Progress/meta systems (stored in localStorage).
@@ -52,7 +54,7 @@ export function createApp() {
 
   // Rendering: projection + canvas drawing extensions + bot animation tables.
   app.Projection = Projection;
-  extendBoxView({ app: app, Box: app.Box, LightBox: app.LightBox });
+  extendBoxView({ app: app, Box: app.Box, LightBox: app.LightBox, BadBox: app.BadBox });
   extendMapView(app.map);
 
   app.bot.animations = createBotAnimations();

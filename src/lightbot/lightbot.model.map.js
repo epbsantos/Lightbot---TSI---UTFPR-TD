@@ -458,6 +458,9 @@ export function createMap(params) {
               mapRef[j][maps[x].map.length - i - 1] = new LightBox(maps[x].map[i][j].h, j, maps[x].map.length - i - 1);
               nbrLights++;
               break;
+              case 'k':
+               mapRef[j][maps[x].map.length - i - 1] = new BadBox(maps[x].map[i][j].h, j, maps[x].map.length - i - 1);
+              break;  
             default:
               // output error and fall back to box element
               console.error('Map contains unsupported element: ' + maps[x].map[i][j].t);

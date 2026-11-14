@@ -4,9 +4,11 @@ export function extendBoxView(params) {
   var app = params.app;
   var Box = params.Box;
   var LightBox = params.LightBox;
+  var BadBox = params.BadBox;
   if (!app) throw new Error("extendBoxView: missing app");
   if (!Box) throw new Error("extendBoxView: missing Box");
   if (!LightBox) throw new Error("extendBoxView: missing LightBox");
+  if (!BadBox) throw new Error("extendBoxView: missing BadBox");
 
   // dimension
   var edgeLength = 50;
@@ -24,6 +26,12 @@ export function extendBoxView(params) {
   var colorTopLightOnOverlay = "#FEFBAF"; // "#ffff7c";
   var colorTopLightOff = "#0468fb";
   var colorTopLightOffOverlay = "#4c81ff";
+
+  // visual values (badBox)
+  var colorTopBadOn = "#920000ff"; // "#e3e500";
+  var colorTopBadOnOverlay = "#ff0000ff"; // "#ffff7c";
+  var colorTopBadOff = "#580000ff";
+  var colorTopBadOffOverlay = "#57112c81";
 
   function readThemeColor(names, fallback) {
     if (typeof window === "undefined" || !window.getComputedStyle) return fallback;
@@ -65,6 +73,9 @@ export function extendBoxView(params) {
   var animationFrames = 60; // slower, restrained pulse inside a fixed inset panel
   LightBox.prototype.pulseGrowing = true; // controls the growth/shrink of the pulse animation
   LightBox.prototype.currentAnimationFrame = 0; // current animation frame, used internally to control the animation
+
+  BadBox.prototype.pulseGrowing = true;
+  BadBox.prototype.currentAnimationFrame = 0;
 
   function fillFace(tint, opacity, edgeOpacity) {
     app.ctx.fillStyle = colorTop;
@@ -131,6 +142,30 @@ export function extendBoxView(params) {
     var pulse = (1 - Math.cos(phase * Math.PI)) / 2;
     topInset(this, 11 - pulse * 3);
     app.ctx.fillStyle = this.lightOn ? colorTopLightOnOverlay : colorTopLightOffOverlay;
+    app.ctx.fill();
+    app.ctx.restore();
+  }
+
+  function drawTopFaceBadBox() {
+    // Keep the tile's rim visible so the light reads as part of its surface.
+    drawTopFaceBox.call(this);
+    app.ctx.save();
+    topInset(this, 3);
+    app.ctx.fillStyle = "rgba(0, 0, 0, 0.28)";
+    app.ctx.fill();
+    topInset(this, 5);
+    app.ctx.fillStyle = this.badOn ? colorTopBadOn : colorTopBadOff;
+    if (this.badOn) {
+      app.ctx.shadowColor = "rgba(97, 8, 5, 0.4)";
+      app.ctx.shadowBlur = 6;
+    }
+    app.ctx.fill();
+    app.ctx.shadowBlur = 0;
+
+    var phase = this.currentAnimationFrame / animationFrames;
+    var pulse = (1 - Math.cos(phase * Math.PI)) / 2;
+    topInset(this, 11 - pulse * 3);
+    app.ctx.fillStyle = this.badOn ? colorTopBadOnOverlay : colorTopBadOffOverlay;
     app.ctx.fill();
     app.ctx.restore();
   }
@@ -211,8 +246,11 @@ export function extendBoxView(params) {
   LightBox.prototype.step = stepLightBox;
   LightBox.prototype.drawTopFace = drawTopFaceLightBox;
 
+  BadBox.prototype.step = stepLightBox; // same pulse animation as lightBox
+  BadBox.prototype.drawTopFace = drawTopFaceBadBox;
+  
   syncThemeColors();
   observeThemeChanges();
 
-  return { Box: Box, LightBox: LightBox };
+  return { Box: Box, LightBox: LightBox, BadBox: BadBox };
 }
