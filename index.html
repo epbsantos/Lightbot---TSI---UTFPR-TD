@@ -411,13 +411,16 @@
           <div id="programContainer" class="game-program">
             <div class="game-program-body">
               <div class="game-program-header">
-                <div class="game-program-tabs" role="tablist">
-                  <button type="button" id="tabBlocks" role="tab" aria-selected="true" class="lb-tab-button is-active">
-                    <span>Blocks</span>
-                  </button>
-                  <button type="button" id="tabCode" role="tab" aria-selected="false" class="lb-tab-button">
-                    <span>Code</span>
-                  </button>
+                <div class="game-program-tabs-wrap">
+                  <div class="game-program-tabs" role="tablist">
+                    <button type="button" id="tabBlocks" role="tab" aria-selected="true" class="lb-tab-button is-active">
+                      <span>Blocks</span>
+                    </button>
+                    <button type="button" id="tabCode" role="tab" aria-selected="false" class="lb-tab-button">
+                      <span>Code</span>
+                    </button>
+                  </div>
+                  <button type="button" id="codeHelpButton" class="lb-code-help-button" title="How to use Code mode" aria-label="How to use Code mode">?</button>
                 </div>
                 <p id="gameRunStatus" class="game-hint" role="status" hidden></p>
                 <button id="clearButton" class="lb-button" data-i18n-title="gameScreen.clear" title="Clear">
@@ -491,6 +494,32 @@
       <div class="lb-dialog-content">
         <span class="achievement shrink-0"></span>
         <p class="message flex-1"></p>
+      </div>
+      <div class="lb-dialog-actions">
+        <form method="dialog">
+          <button class="lb-button">OK</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="codeHelpDialog" class="lb-dialog" aria-labelledby="codeHelpTitle">
+    <div class="lb-dialog-box lb-code-help-dialog">
+      <h3 id="codeHelpTitle">Code Mode</h3>
+      <div class="lb-dialog-content lb-code-help-content">
+        <p>Write commands as text instead of dragging blocks. Switching between Blocks and Code converts your program automatically. You can also click the instruction buttons on the left to insert commands at the cursor.</p>
+        <div class="lb-code-help-section">
+          <h4>Available commands</h4>
+          <ul class="lb-code-help-list">
+            <li><code>walk()</code> <span>— Walk forward (alias: w)</span></li>
+            <li><code>jump()</code> <span>— Jump up or down (alias: j)</span></li>
+            <li><code>light()</code> <span>— Toggle light tile (alias: l)</span></li>
+            <li><code>turnLeft()</code> <span>— Turn 90° left (aliases: left, tl)</span></li>
+            <li><code>turnRight()</code> <span>— Turn 90° right (aliases: right, tr)</span></li>
+            <li><code>repeat(n) { ... }</code> <span>— Repeat commands n times, 1 to 99 (aliases: loop, r)</span></li>
+          </ul>
+        </div>
+        <p class="lb-code-help-tip">Tip: Parentheses () and semicolons ; are optional, commands are case-insensitive, and you can add comments using // or #.</p>
       </div>
       <div class="lb-dialog-actions">
         <form method="dialog">

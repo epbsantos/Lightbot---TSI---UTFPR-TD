@@ -435,6 +435,13 @@ export function createUi(params) {
         });
       }
 
+      var codeHelpButton = document.getElementById("codeHelpButton");
+      if (codeHelpButton) {
+        codeHelpButton.addEventListener("click", function () {
+          dialogs.open("codeHelpDialog");
+        });
+      }
+
       // Native radio controls support both clicking and arrow-key topic selection.
       var helpTopics = document.getElementById("helpTopics");
       if (helpTopics) {
