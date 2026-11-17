@@ -10,6 +10,7 @@ document.documentElement.style.setProperty("--lb-achievement-bg", 'url("' + asse
 ["gold", "silver", "bronze"].forEach(function (metal) {
   document.documentElement.style.setProperty("--lb-medal-" + metal + "-bg", 'url("' + assetBaseUrl + 'img/medals/' + metal + '.png")');
 });
+initThemeBackground(assetBaseUrl);
 
 import { themeChange } from "theme-change";
 

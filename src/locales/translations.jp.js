@@ -5,6 +5,8 @@ export const LIGHTBOT_TRANSLATIONS_JP = {
     "stop": "停止"
   },
   "welcomeScreen": {
+    "sound": "サウンド",
+    "theme": "テーマ",
     "start": "ゲーム開始",
     "toggleAudio": "サウンド切替",
     "help": "ヘルプ",
@@ -12,10 +14,20 @@ export const LIGHTBOT_TRANSLATIONS_JP = {
     "language": "言語"
   },
   "levelSelectScreen": {
+    "progress": "クリア: {{completed}} / {{total}}",
+    "level": "レベル {{number}}",
+    "incomplete": "未クリア",
+    "completed": "クリア済み",
+    "bronze": "銅",
+    "silver": "銀",
+    "gold": "金",
     "title": "レベル選択",
     "mainMenu": "メインメニュー"
   },
   "achievementsScreen": {
+    "progress": "解除した実績",
+    "unlocked": "解除済み",
+    "locked": "未解除",
     "title": "実績",
     "mainMenu": "メインメニュー"
   },
@@ -54,6 +66,20 @@ export const LIGHTBOT_TRANSLATIONS_JP = {
     }
   },
   "helpScreen": {
+    "title": "遊び方",
+    "topicsTitle": "トピック",
+    "topics": {
+      "goal": "ゲームの目的",
+      "howTo": "プログラムを作る",
+      "objects": "ゲームオブジェクト",
+      "walkForward": "前に進む",
+      "turnRight": "右に回転",
+      "turnLeft": "左に回転",
+      "jump": "ジャンプ",
+      "light": "ライト",
+      "repeat": "繰り返し",
+      "medals": "メダル"
+    },
     "mainMenu": "メインメニュー",
     "goal": {
       "title": "ゲームの目的",
@@ -61,7 +87,7 @@ export const LIGHTBOT_TRANSLATIONS_JP = {
     },
     "howTo": {
       "title": "遊び方",
-      "content": "命令リストから命令をドラッグし、プログラム枠にドロップすることでプログラムを作成できます。命令は、ハイライトされているブロックの一番下に自動的に追加されます。\n「実行」ボタンをクリックするとプログラムが実行されます。現在のプログラムに満足できない場合は、「停止」ボタンをクリックすればいつでも実行を中断できます。中断するとロボットは初期位置に戻ります。"
+      "content": "命令をクリックするとプログラムの最後に追加されます。ドラッグすれば、「繰り返し」ブロックの中も含めて好きな位置に置けます。命令をドラッグして並べ替えることもできます。\n「実行」をクリックするとプログラムが実行されます。同じボタンが「一時停止」、続いて「再開」に変わるので、途中で止めてもそこから続けられます。「リセット」ボタンを押すと、ロボットとライトが初期状態に戻り、プログラムを編集できるようになります。リセットしても命令は消えません。実行が終わったら、「もう一度実行」でプログラムを最初から実行し直せます。"
     },
     "objects": {
       "title": "ゲームオブジェクト",
@@ -100,6 +126,24 @@ export const LIGHTBOT_TRANSLATIONS_JP = {
     }
   },
   "gameScreen": {
+    "decreaseRepeat": "繰り返し回数を減らす",
+    "increaseRepeat": "繰り返し回数を増やす",
+    "status": { "running": "実行中…", "paused": "一時停止中", "finished": "終了" },
+    "pause": "一時停止",
+    "resume": "再開",
+    "runAgain": "もう一度実行",
+    "paused": "一時停止中 · 編集するにはリセット",
+    "addHint": "クリックで追加 · ドラッグで並べ替え",
+    "ready": "実行準備完了",
+    "running": "実行中…",
+    "finished": "プログラム終了 · 編集するにはリセット",
+    "reset": "リセット",
+    "remove": "命令を削除",
+    "commands": {
+      "walk": "前進",
+      "turnRight": "右",
+      "turnLeft": "左"
+    },
     "back": "戻る",
     "toggleAudio": "サウンド切替",
     "clear": "クリア",

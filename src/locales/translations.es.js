@@ -5,6 +5,8 @@ export const LIGHTBOT_TRANSLATIONS_ES = {
     "stop": "Detener"
   },
   "welcomeScreen": {
+    "sound": "Sonido",
+    "theme": "Tema",
     "start": "Iniciar juego",
     "toggleAudio": "Activar/desactivar audio",
     "help": "Ayuda",
@@ -12,10 +14,20 @@ export const LIGHTBOT_TRANSLATIONS_ES = {
     "language": "Idioma"
   },
   "levelSelectScreen": {
+    "progress": "Completados: {{completed}} / {{total}}",
+    "level": "Nivel {{number}}",
+    "incomplete": "Incompleto",
+    "completed": "Completado",
+    "bronze": "Bronce",
+    "silver": "Plata",
+    "gold": "Oro",
     "title": "Seleccionar nivel",
     "mainMenu": "Menú principal"
   },
   "achievementsScreen": {
+    "progress": "Logros desbloqueados",
+    "unlocked": "Desbloqueado",
+    "locked": "Bloqueado",
     "title": "Logros",
     "mainMenu": "Menú principal"
   },
@@ -54,6 +66,20 @@ export const LIGHTBOT_TRANSLATIONS_ES = {
     }
   },
   "helpScreen": {
+    "title": "Cómo jugar",
+    "topicsTitle": "Temas",
+    "topics": {
+      "goal": "Objetivo del juego",
+      "howTo": "Crear un programa",
+      "objects": "Objetos del juego",
+      "walkForward": "Avanzar",
+      "turnRight": "Girar a la derecha",
+      "turnLeft": "Girar a la izquierda",
+      "jump": "Saltar",
+      "light": "Luz",
+      "repeat": "Repetir",
+      "medals": "Medallas"
+    },
     "mainMenu": "Menú principal",
     "goal": {
       "title": "Objetivo del juego",
@@ -61,7 +87,7 @@ export const LIGHTBOT_TRANSLATIONS_ES = {
     },
     "howTo": {
       "title": "Cómo jugar",
-      "content": "Puedes crear un programa arrastrando instrucciones desde la lista de instrucciones y soltándolas en el marco del programa. Las instrucciones se añadirán automáticamente al final del bloque resaltado.\nEjecuta tu programa haciendo clic en el botón Ejecutar. Si no estás satisfecho con tu programa actual, puedes interrumpir la ejecución en cualquier momento haciendo clic en el botón Detener. Esto devolverá al robot a su posición inicial."
+      "content": "Haz clic en una instrucción para añadirla al final de tu programa, o arrástrala a la posición deseada, incluso dentro de un bloque Repetir. Arrastra las instrucciones para reordenarlas.\nHaz clic en Ejecutar para ejecutar tu programa. El mismo botón cambia a Pausar y luego a Reanudar, para que puedas pausar y continuar sin perder tu lugar. Usa el botón Reiniciar para devolver el robot y las luces a su estado inicial y editar tu programa. Reiniciar conserva tus instrucciones. Cuando termina la ejecución, Ejecutar de nuevo reinicia tu programa desde el principio."
     },
     "objects": {
       "title": "Objetos del juego",
@@ -100,6 +126,24 @@ export const LIGHTBOT_TRANSLATIONS_ES = {
     }
   },
   "gameScreen": {
+    "decreaseRepeat": "Disminuir repeticiones",
+    "increaseRepeat": "Aumentar repeticiones",
+    "status": { "running": "Ejecutando…", "paused": "En pausa", "finished": "Terminado" },
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "runAgain": "Ejecutar de nuevo",
+    "paused": "En pausa · Reinicia para editar",
+    "addHint": "Clic para añadir · Arrastra para ordenar",
+    "ready": "Listo para ejecutar",
+    "running": "Ejecutando…",
+    "finished": "Programa terminado · Reinicia para editar",
+    "reset": "Reiniciar",
+    "remove": "Quitar instrucción",
+    "commands": {
+      "walk": "Avanzar",
+      "turnRight": "Derecha",
+      "turnLeft": "Izquierda"
+    },
     "back": "Volver",
     "toggleAudio": "Activar/desactivar audio",
     "clear": "Borrar",
