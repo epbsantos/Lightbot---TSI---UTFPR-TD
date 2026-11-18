@@ -7,6 +7,10 @@ export const LIGHTBOT_TRANSLATIONS_EN = {
   "welcomeScreen": {
     "sound": "Sound",
     "theme": "Theme",
+    "skin": "Character",
+    "skinCustom": "OG skin",
+    "skinLucas": "Lucas's Skin",
+    "skinClassic": "Classic Robot",
     "start": "Start Game",
     "toggleAudio": "Toggle Audio",
     "help": "Help",
