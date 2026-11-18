@@ -5,6 +5,10 @@ export const LIGHTBOT_TRANSLATIONS_JP = {
     "stop": "停止"
   },
   "welcomeScreen": {
+    "skin": "スキン",
+    "skinCustom": "OG skin",
+    "skinLucas": "ルーカスのスキン",
+    "skinClassic": "クラシックロボット",
     "start": "ゲーム開始",
     "toggleAudio": "サウンド切替",
     "help": "ヘルプ",

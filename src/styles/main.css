@@ -149,6 +149,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    flex-wrap: wrap;
   }
 
   .welcome-tools .audioToggleButton[aria-pressed="true"] {

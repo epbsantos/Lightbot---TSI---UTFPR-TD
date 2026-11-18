@@ -20,6 +20,28 @@ import { initI18n } from "./lightbot/lightbot.view.canvas.ui.translate.js";
 import { initDialogs } from "./lightbot/lightbot.view.canvas.ui.dialogs.js";
 import { initHistory } from "./lightbot/lightbot.view.canvas.ui.history.js";
 
+function initSkinSelect(app) {
+  var skinSelect = document.getElementById("skinSelect");
+  if (!skinSelect) return;
+
+  var savedSkin = "img/skins/skin-custom.png";
+  try {
+    savedSkin = localStorage.getItem("lightbot_skin") || savedSkin;
+  } catch (e) {
+    // ignore
+  }
+  skinSelect.value = savedSkin;
+
+  skinSelect.addEventListener("change", function () {
+    var chosen = skinSelect.value;
+    if (app && app.bot && typeof app.bot.setSkin === "function") {
+      app.bot.setSkin(chosen);
+    } else {
+      window.dispatchEvent(new CustomEvent("lightbot:skinChange", { detail: { skin: chosen } }));
+    }
+  });
+}
+
 function runWhenDomReady(fn) {
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", fn, { once: true });
@@ -39,6 +61,8 @@ async function boot() {
 
   // Apply translations before we initialize UI controls that use i18next.t().
   await initI18n();
+
+  initSkinSelect(app);
 
   app.ui.editor.initEditor();
   app.ui.initButtons();

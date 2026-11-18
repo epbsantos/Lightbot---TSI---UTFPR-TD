@@ -8,6 +8,10 @@ export const LIGHTBOT_TRANSLATIONS_SRB_CIR = {
   "welcomeScreen": {
     "sound": "Звук",
     "theme": "Тема",
+    "skin": "Изглед",
+    "skinCustom": "OG skin",
+    "skinLucas": "Лукасов изглед",
+    "skinClassic": "Класични робот",
     "start": "Почни игру",
     "toggleAudio": "Укључи/искључи звук",
     "help": "Помоћ",

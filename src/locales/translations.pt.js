@@ -7,6 +7,10 @@ export const LIGHTBOT_TRANSLATIONS_PT_BR = {
   "welcomeScreen": {
     "sound": "Som",
     "theme": "Tema",
+    "skin": "Personagem",
+    "skinCustom": "OG skin",
+    "skinLucas": "Skin Lucas",
+    "skinClassic": "Robô Clássico",
     "start": "Iniciar Jogo",
     "toggleAudio": "Alternar Áudio",
     "help": "Ajuda",

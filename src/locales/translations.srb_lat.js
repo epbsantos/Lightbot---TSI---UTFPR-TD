@@ -8,6 +8,10 @@ export const LIGHTBOT_TRANSLATIONS_SRB_LAT = {
   "welcomeScreen": {
     "sound": "Zvuk",
     "theme": "Tema",
+    "skin": "Izgled",
+    "skinCustom": "OG skin",
+    "skinLucas": "Lucasov izgled",
+    "skinClassic": "Klasični robot",
     "start": "Započni igru",
     "toggleAudio": "Uključi/isključi zvuk",
     "help": "Pomoć",

@@ -16,8 +16,41 @@ export function extendBotView(params) {
   var readyForNextInstruction = true;
 
   // bot sprites
-  var image = new Image();
-  image.src = 'img/sprites.png';
+  var image = typeof Image !== "undefined" ? new Image() : { src: "" };
+  var defaultSkin = 'img/skins/skin-custom.png';
+  var initialSkin = defaultSkin;
+  try {
+    if (typeof localStorage !== "undefined") {
+      initialSkin = localStorage.getItem('lightbot_skin') || defaultSkin;
+    }
+  } catch (e) {
+    initialSkin = defaultSkin;
+  }
+  image.src = initialSkin;
+
+  function setSkin(src) {
+    if (!src) return;
+    image.src = src;
+    try {
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem('lightbot_skin', src);
+      }
+    } catch (e) {
+      // storage unavailable
+    }
+  }
+
+  function getSkin() {
+    return image.src;
+  }
+
+  if (typeof window !== "undefined") {
+    window.addEventListener('lightbot:skinChange', function (e) {
+      if (e.detail && e.detail.skin) {
+        setSkin(e.detail.skin);
+      }
+    });
+  }
 
   // bot animation
   var currentStep = 0; // elapsed animation time at normal speed, independent of render frames
@@ -172,6 +205,8 @@ export function extendBotView(params) {
   bot.getMovement = getMovement;
   bot.setMovement = setMovement;
   bot.isReadyForNextInstruction = isReadyForNextInstruction;
+  bot.setSkin = setSkin;
+  bot.getSkin = getSkin;
 
   return bot;
 }
